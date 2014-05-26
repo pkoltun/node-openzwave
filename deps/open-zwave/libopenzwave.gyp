@@ -110,6 +110,7 @@
         'cpp/src/platform/unix/TimeStampImpl.cpp',
         'cpp/src/platform/unix/WaitImpl.cpp'
         ],
+		'include_dirs': [ 'cpp/src/platform/unix' ],
         }],
 		['OS=="win"', {
           'sources': [
@@ -137,6 +138,7 @@
         'cpp/src/platform/unix/TimeStampImpl.cpp',
         'cpp/src/platform/unix/WaitImpl.cpp'
           ],
+		  'include_dirs': [ 'cpp/src/platform/unix' ],
           'defines': ['DARWIN']
         }]
       ]
