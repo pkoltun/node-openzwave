@@ -1,0 +1,10 @@
+{
+  "name": "wintest",
+  "version": "0.0.0",
+  "description": "wintest",
+  "main": "app.js",
+  "author": {
+    "name": "svante",
+    "email": ""
+  }
+}
