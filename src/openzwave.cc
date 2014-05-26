@@ -14,8 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <unistd.h>
-#include <pthread.h>
+
 #include <list>
 #include <queue>
 
@@ -27,6 +26,61 @@
 #include "Notification.h"
 #include "Options.h"
 #include "Value.h"
+
+
+#ifdef WIN32
+class mutex
+{
+public:
+	mutex()  { InitializeCriticalSection(&_criticalSection); }
+	~mutex() { DeleteCriticalSection    (&_criticalSection);}
+	inline void lock()   { EnterCriticalSection(&_criticalSection); }
+	inline void unlock() { LeaveCriticalSection(&_criticalSection); }
+	
+   class scoped_lock
+        {
+        public:
+            inline explicit scoped_lock(mutex & sp) : _sl(sp)  { _sl.lock(); }
+            inline ~scoped_lock() 							   { _sl.unlock(); }
+        private:
+            scoped_lock(scoped_lock const &);
+            scoped_lock & operator=(scoped_lock const &);
+            mutex& 	_sl;
+        };	
+	
+	private:
+	CRITICAL_SECTION _criticalSection;
+};
+#endif
+
+#ifdef linux
+#include <unistd.h>
+#include <pthread.h>
+
+class mutex
+{
+public:
+	mutex()  { pthread_mutex_init  (&_mutex, NULL);
+   ~mutex() { pthread_mutex_destroy(&_mutex);}
+	inline void lock()   { pthread_mutex_lock(&_mutex); }
+	inline void unlock() { pthread_mutex_unlock(&_mutex);}
+	
+  class scoped_lock
+        {
+        public:
+            inline explicit scoped_lock(mutex & sp) : _sl(sp)  { _sl.lock(); }
+            inline ~scoped_lock() 							   { _sl.unlock(); }
+        private:
+            scoped_lock(scoped_lock const &);
+            scoped_lock & operator=(scoped_lock const &);
+            mutex& 	_sl;
+        };		
+	
+	private:
+	pthread_mutex_t _mutex;
+};
+#endif
+
 
 using namespace v8;
 using namespace node;
@@ -75,13 +129,13 @@ typedef struct {
 /*
  * Message passing queue between OpenZWave callback and v8 async handler.
  */
-static pthread_mutex_t zqueue_mutex = PTHREAD_MUTEX_INITIALIZER;
+static mutex zqueue_mutex;
 static std::queue<NotifInfo *> zqueue;
 
 /*
  * Node state.
  */
-static pthread_mutex_t znodes_mutex = PTHREAD_MUTEX_INITIALIZER;
+static mutex znodes_mutex;
 static std::list<NodeInfo *> znodes;
 
 static uint32_t homeid;
@@ -142,9 +196,12 @@ void cb(OpenZWave::Notification const *cb, void *ctx)
 		break;
 	}
 
-	pthread_mutex_lock(&zqueue_mutex);
-	zqueue.push(notif);
-	pthread_mutex_unlock(&zqueue_mutex);
+	{
+	   mutex::scoped_lock sl(zqueue_mutex);
+	   //pthread_mutex_lock(&zqueue_mutex);
+	   zqueue.push(notif);
+	   //pthread_mutex_unlock(&zqueue_mutex);	   
+	}
 
 	uv_async_send(&async);
 }
@@ -158,7 +215,7 @@ void async_cb_handler(uv_async_t *handle, int status)
 	NotifInfo *notif;
 	Local<Value> args[16];
 
-	pthread_mutex_lock(&zqueue_mutex);
+	mutex::scoped_lock sl(zqueue_mutex);
 
 	while (!zqueue.empty())
 	{
@@ -189,9 +246,12 @@ void async_cb_handler(uv_async_t *handle, int status)
 			node->homeid = notif->homeid;
 			node->nodeid = notif->nodeid;
 			node->polled = false;
-			pthread_mutex_lock(&znodes_mutex);
-			znodes.push_back(node);
-			pthread_mutex_unlock(&znodes_mutex);
+			{
+				mutex::scoped_lock sl(znodes_mutex);
+				//pthread_mutex_lock(&znodes_mutex);
+				znodes.push_back(node);
+				//pthread_mutex_unlock(&znodes_mutex);
+			}
 			args[0] = String::New("node added");
 			args[1] = Integer::New(notif->nodeid);
 			MakeCallback(context_obj, "emit", 2, args);
@@ -219,9 +279,10 @@ void async_cb_handler(uv_async_t *handle, int status)
 
 			if (notif->type == OpenZWave::Notification::Type_ValueAdded) {
 				if ((node = get_node_info(notif->nodeid))) {
-					pthread_mutex_lock(&znodes_mutex);
+				mutex::scoped_lock sl(znodes_mutex);
+					//pthread_mutex_lock(&znodes_mutex);
 					node->values.push_back(value);
-					pthread_mutex_unlock(&znodes_mutex);
+					//pthread_mutex_unlock(&znodes_mutex);
 				}
 				OpenZWave::Manager::Get()->SetChangeVerified(value, true);
 			}
@@ -414,7 +475,7 @@ void async_cb_handler(uv_async_t *handle, int status)
 		zqueue.pop();
 	}
 
-	pthread_mutex_unlock(&zqueue_mutex);
+	//pthread_mutex_unlock(&zqueue_mutex);
 }
 
 Handle<Value> OZW::New(const Arguments& args)

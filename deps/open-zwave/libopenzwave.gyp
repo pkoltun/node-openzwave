@@ -79,14 +79,6 @@
         'cpp/src/platform/Thread.cpp',
         'cpp/src/platform/TimeStamp.cpp',
         'cpp/src/platform/Wait.cpp',
-        'cpp/src/platform/unix/EventImpl.cpp',
-        'cpp/src/platform/unix/FileOpsImpl.cpp',
-        'cpp/src/platform/unix/LogImpl.cpp',
-        'cpp/src/platform/unix/MutexImpl.cpp',
-        'cpp/src/platform/unix/SerialControllerImpl.cpp',
-        'cpp/src/platform/unix/ThreadImpl.cpp',
-        'cpp/src/platform/unix/TimeStampImpl.cpp',
-        'cpp/src/platform/unix/WaitImpl.cpp',
         'cpp/src/Driver.cpp',
         'cpp/src/Group.cpp',
         'cpp/src/Manager.cpp',
@@ -102,7 +94,6 @@
         'cpp/src',
         'cpp/src/command_classes',
         'cpp/src/platform',
-        'cpp/src/platform/unix',
         'cpp/src/value_classes',
         'cpp/tinyxml'
       ],
@@ -110,15 +101,43 @@
         ['OS=="linux"', {
           'sources': [
             'cpp/hidapi/linux/hid.c',
-          ]
+        'cpp/src/platform/unix/EventImpl.cpp',
+        'cpp/src/platform/unix/FileOpsImpl.cpp',
+        'cpp/src/platform/unix/LogImpl.cpp',
+        'cpp/src/platform/unix/MutexImpl.cpp',
+        'cpp/src/platform/unix/SerialControllerImpl.cpp',
+        'cpp/src/platform/unix/ThreadImpl.cpp',
+        'cpp/src/platform/unix/TimeStampImpl.cpp',
+        'cpp/src/platform/unix/WaitImpl.cpp'
+        ],
+        }],
+		['OS=="win"', {
+          'sources': [
+            'cpp/hidapi/windows/hid.cpp',
+        'cpp/src/platform/windows/EventImpl.cpp',
+        'cpp/src/platform/windows/FileOpsImpl.cpp',
+        'cpp/src/platform/windows/LogImpl.cpp',
+        'cpp/src/platform/windows/MutexImpl.cpp',
+        'cpp/src/platform/windows/SerialControllerImpl.cpp',
+        'cpp/src/platform/windows/ThreadImpl.cpp',
+        'cpp/src/platform/windows/TimeStampImpl.cpp',
+        'cpp/src/platform/windows/WaitImpl.cpp'
+          ],
+		'include_dirs': [ 'cpp/src/platform/windows' ],
         }],
         ['OS=="mac"', {
           'sources': [
             'cpp/hidapi/mac/hid.c',
+        'cpp/src/platform/unix/EventImpl.cpp',
+        'cpp/src/platform/unix/FileOpsImpl.cpp',
+        'cpp/src/platform/unix/LogImpl.cpp',
+        'cpp/src/platform/unix/MutexImpl.cpp',
+        'cpp/src/platform/unix/SerialControllerImpl.cpp',
+        'cpp/src/platform/unix/ThreadImpl.cpp',
+        'cpp/src/platform/unix/TimeStampImpl.cpp',
+        'cpp/src/platform/unix/WaitImpl.cpp'
           ],
-          'defines': [
-            'DARWIN'
-          ]
+          'defines': ['DARWIN']
         }]
       ]
     }
