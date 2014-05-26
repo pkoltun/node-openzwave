@@ -40,12 +40,12 @@ public:
    class scoped_lock
         {
         public:
-            inline explicit scoped_lock(mutex & sp) : _sl(sp)  { _sl.lock(); }
-            inline ~scoped_lock() 							   { _sl.unlock(); }
+            inline explicit scoped_lock(mutex & sp) : _sl(sp) { _sl.lock(); }
+            inline ~scoped_lock()                             { _sl.unlock(); }
         private:
             scoped_lock(scoped_lock const &);
             scoped_lock & operator=(scoped_lock const &);
-            mutex& 	_sl;
+            mutex& _sl;
         };	
 	
 	private:
@@ -69,7 +69,7 @@ public:
         {
         public:
             inline explicit scoped_lock(mutex & sp) : _sl(sp)  { _sl.lock(); }
-            inline ~scoped_lock() 							   { _sl.unlock(); }
+            inline ~scoped_lock()                              { _sl.unlock(); }
         private:
             scoped_lock(scoped_lock const &);
             scoped_lock & operator=(scoped_lock const &);
