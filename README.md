@@ -10,7 +10,7 @@ monitor the network for changes, and has rudimentary write support.
 
 ## Install
 
-The module currently builds only on OS X and Linux.  On Linux you will need to
+The module currently builds only on OS X, Linux and Windows VS 2013.  On Linux you will need to
 ensure the libudev headers are installed first.
 
 ```sh
