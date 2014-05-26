@@ -125,6 +125,7 @@
         'cpp/src/platform/windows/WaitImpl.cpp'
           ],
 		'include_dirs': [ 'cpp/src/platform/windows' ],
+		'defines': ['BUILDING_NODE_EXTENSION']
         }],
         ['OS=="mac"', {
           'sources': [

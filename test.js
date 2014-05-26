@@ -4,6 +4,7 @@
 
 var OpenZWave = require('./lib/openzwave.js');
 
+//var zwave = new OpenZWave('\\\\.\\COM4', {
 var zwave = new OpenZWave('/dev/ttyUSB0', {
 	saveconfig: true,
 });
