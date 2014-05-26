@@ -60,10 +60,10 @@ public:
 class mutex
 {
 public:
-	mutex()  { pthread_mutex_init  (&_mutex, NULL);
-   ~mutex() { pthread_mutex_destroy(&_mutex);}
-	inline void lock()   { pthread_mutex_lock(&_mutex); }
-	inline void unlock() { pthread_mutex_unlock(&_mutex);}
+  mutex()                   { pthread_mutex_init  (&_mutex, NULL); }
+   ~mutex()                 { pthread_mutex_destroy(&_mutex);}
+	inline void lock()  { pthread_mutex_lock(&_mutex); }
+	inline void unlock(){ pthread_mutex_unlock(&_mutex);}
 	
   class scoped_lock
         {
