@@ -4,7 +4,8 @@
 
 var OpenZWave = require('../../lib/openzwave.js');
 
-var zwave = new OpenZWave('\\\\.\\COM4', {
+var zwave = new OpenZWave('\\\\.\\COM11', {
+    logging: true,
 	saveconfig: true,
 });
 var nodes = [];
@@ -31,7 +32,8 @@ zwave.on('node added', function(nodeid) {
 		loc: '',
 		classes: {},
 		ready: false,
-	};
+    };
+    console.log('node added: ' + nodeid);
 });
 
 zwave.on('value added', function(nodeid, comclass, value) {
@@ -77,9 +79,10 @@ zwave.on('node ready', function(nodeid, nodeinfo) {
 		    nodeinfo.type,
 		    nodeinfo.loc);
 	for (comclass in nodes[nodeid]['classes']) {
-		switch (comclass) {
-		case 0x25: // COMMAND_CLASS_SWITCH_BINARY
-		case 0x26: // COMMAND_CLASS_SWITCH_MULTILEVEL
+        switch (comclass) {
+        case 0x25: // COMMAND_CLASS_SWITCH_BINARY
+            case 0x26:// COMMAND_CLASS_SWITCH_MULTILEVEL
+            case 0x48:
 			zwave.enablePoll(nodeid, comclass);
 			break;
 		}
@@ -121,6 +124,7 @@ zwave.on('scan complete', function() {
 });
 
 zwave.connect();
+//zwave.hardReset();
 
 process.on('SIGINT', function() {
 	console.log('disconnecting...');

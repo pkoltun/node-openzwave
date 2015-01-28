@@ -88,7 +88,6 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\src;..\..\..\src\command_classes;..\..\..\src\value_classes;..\..\..\src\platform;..\..\..\src\platform\windows;..\..\..\tinyxml;..\..\..\hidapi\hidapi;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -97,6 +96,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>..\..\..\src;..\..\..\tinyxml;..\..\..\hidapi\hidapi;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)\$(ProjectName).lib</OutputFile>
@@ -118,7 +118,6 @@ exit 0</Command>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\src;..\..\..\src\command_classes;..\..\..\src\value_classes;..\..\..\src\platform;..\..\..\src\platform\windows;..\..\..\tinyxml;..\..\..\hidapi\hidapi;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;OPENZWAVE_MAKEDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -128,6 +127,7 @@ exit 0</Command>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>..\..\..\src;..\..\..\tinyxml;..\..\..\hidapi\hidapi;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
@@ -154,7 +154,6 @@ exit 0</Command>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\src;..\..\..\src\command_classes;..\..\..\src\value_classes;..\..\..\src\platform;..\..\..\src\platform\windows;..\..\..\tinyxml;..\..\..\hidapi\hidapi;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;OPENZWAVE_MAKEDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -164,6 +163,7 @@ exit 0</Command>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>..\..\..\src;..\..\..\tinyxml;..\..\..\hidapi\hidapi;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)\$(ProjectName).lib</OutputFile>
@@ -188,7 +188,6 @@ exit 0</Command>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\..\src;..\..\..\src\command_classes;..\..\..\src\value_classes;..\..\..\src\platform;..\..\..\src\platform\windows;..\..\..\tinyxml;..\..\..\hidapi\hidapi;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -196,6 +195,7 @@ exit 0</Command>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>..\..\..\src;..\..\..\tinyxml;..\..\..\hidapi\hidapi;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)\$(ProjectName).lib</OutputFile>
@@ -215,9 +215,18 @@ exit 0</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\hidapi\hidapi\hidapi.h" />
+    <ClInclude Include="..\..\..\src\aes\aes.h" />
+    <ClInclude Include="..\..\..\src\aes\aesopt.h" />
+    <ClInclude Include="..\..\..\src\aes\aestab.h" />
+    <ClInclude Include="..\..\..\src\aes\brg_endian.h" />
+    <ClInclude Include="..\..\..\src\aes\brg_types.h" />
     <ClInclude Include="..\..\..\src\Bitfield.h" />
+    <ClInclude Include="..\..\..\src\command_classes\DoorLock.h" />
+    <ClInclude Include="..\..\..\src\command_classes\DoorLockLogging.h" />
     <ClInclude Include="..\..\..\src\command_classes\NoOperation.h" />
     <ClInclude Include="..\..\..\src\command_classes\SceneActivation.h" />
+    <ClInclude Include="..\..\..\src\command_classes\Security.h" />
+    <ClInclude Include="..\..\..\src\command_classes\TimeParameters.h" />
     <ClInclude Include="..\..\..\src\command_classes\SensorAlarm.h" />
     <ClInclude Include="..\..\..\src\command_classes\UserCode.h" />
     <ClInclude Include="..\..\..\src\Defs.h" />
@@ -309,8 +318,16 @@ exit 0</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\hidapi\windows\hid.cpp" />
+    <ClCompile Include="..\..\..\src\aes\aescrypt.c" />
+    <ClCompile Include="..\..\..\src\aes\aeskey.c" />
+    <ClCompile Include="..\..\..\src\aes\aestab.c" />
+    <ClCompile Include="..\..\..\src\aes\aes_modes.c" />
+    <ClCompile Include="..\..\..\src\command_classes\DoorLock.cpp" />
+    <ClCompile Include="..\..\..\src\command_classes\DoorLockLogging.cpp" />
     <ClCompile Include="..\..\..\src\command_classes\NoOperation.cpp" />
     <ClCompile Include="..\..\..\src\command_classes\SceneActivation.cpp" />
+    <ClCompile Include="..\..\..\src\command_classes\Security.cpp" />
+    <ClCompile Include="..\..\..\src\command_classes\TimeParameters.cpp" />
     <ClCompile Include="..\..\..\src\command_classes\SensorAlarm.cpp" />
     <ClCompile Include="..\..\..\src\command_classes\UserCode.cpp" />
     <ClCompile Include="..\..\..\src\Driver.cpp" />

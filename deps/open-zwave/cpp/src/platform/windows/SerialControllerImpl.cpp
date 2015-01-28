@@ -28,7 +28,7 @@
 #include "Defs.h"
 #include "SerialControllerImpl.h"
 
-#include "Log.h"
+#include "platform/Log.h"
 
 using namespace OpenZWave;
 

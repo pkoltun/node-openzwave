@@ -37,25 +37,25 @@
 #include "Options.h"
 #include "Scene.h"
 
-#include "Mutex.h"
-#include "Event.h"
-#include "Log.h"
+#include "platform/Mutex.h"
+#include "platform/Event.h"
+#include "platform/Log.h"
 
-#include "CommandClasses.h"
-#include "CommandClass.h"
-#include "WakeUp.h"
+#include "command_classes/CommandClasses.h"
+#include "command_classes/CommandClass.h"
+#include "command_classes/WakeUp.h"
 
-#include "ValueID.h"
-#include "ValueBool.h"
-#include "ValueButton.h"
-#include "ValueByte.h"
-#include "ValueDecimal.h"
-#include "ValueInt.h"
-#include "ValueList.h"
-#include "ValueRaw.h"
-#include "ValueSchedule.h"
-#include "ValueShort.h"
-#include "ValueString.h"
+#include "value_classes/ValueID.h"
+#include "value_classes/ValueBool.h"
+#include "value_classes/ValueButton.h"
+#include "value_classes/ValueByte.h"
+#include "value_classes/ValueDecimal.h"
+#include "value_classes/ValueInt.h"
+#include "value_classes/ValueList.h"
+#include "value_classes/ValueRaw.h"
+#include "value_classes/ValueSchedule.h"
+#include "value_classes/ValueShort.h"
+#include "value_classes/ValueString.h"
 
 using namespace OpenZWave;
 
@@ -164,6 +164,7 @@ Manager::Manager
 
 	CommandClasses::RegisterCommandClasses();
 	Scene::ReadScenes();
+	Log::Write(LogLevel_Always, "OpenZwave Version %s Starting Up", getVersionAsString().c_str());
 }
 
 //-----------------------------------------------------------------------------
@@ -306,6 +307,20 @@ bool Manager::RemoveDriver
 	{
 		if( _controllerPath == rit->second->GetControllerPath() )
 		{
+			/* data race right here:
+			 * Before, we were deleting the Driver Class direct from the Map... this was causing a datarace:
+			 * 1) Driver::~Driver destructor starts deleting everything....
+			 * 2) This Triggers Notifications such as ValueDeleted etc
+			 * 3) Notifications are delivered to applications, and applications start calling
+			 *    Manager Functions which require the Driver (such as IsPolled(valueid))
+			 * 4) Manager looks up the Driver in the m_readyDriver and returns a pointer to the Driver Class
+			 *    which is currently being destructed.
+			 * 5) All Hell Breaks loose and we crash and burn.
+			 *
+			 * But we can't change this, as the Driver Destructor triggers internal GetDriver calls... which
+			 * will crash and burn if they can't get a valid Driver back...
+			 */
+			Log::Write( LogLevel_Info, "mgr,     Driver for controller %s pending removal", _controllerPath.c_str() );
 			delete rit->second;
 			m_readyDrivers.erase( rit );
 			Log::Write( LogLevel_Info, "mgr,     Driver for controller %s removed", _controllerPath.c_str() );
@@ -333,7 +348,7 @@ Driver* Manager::GetDriver
 	}
 
 	Log::Write( LogLevel_Error, "mgr,     Manager::GetDriver failed - Home ID 0x%.8x is unknown", _homeId );
-	assert(0);
+	//assert(0); << Don't assert as this might be a valid condition when we call RemoveDriver. See comments above.
 	return NULL;
 }
 
@@ -1388,8 +1403,8 @@ bool Manager::IsNodeFailed
 	        if( Node* node = driver->GetNode( _nodeId ) )
 	        {
 			result = !node->IsNodeAlive();
+        		driver->ReleaseNodes();
 		}
-		driver->ReleaseNodes();
 	}
 	return result;
 }
@@ -1410,8 +1425,8 @@ string Manager::GetNodeQueryStage
 	        if( Node* node = driver->GetNode( _nodeId ) )
 	        {
 			result = node->GetQueryStageName( node->GetCurrentQueryStage() );
+        		driver->ReleaseNodes();
 		}
-		driver->ReleaseNodes();
 	}
 	return result;
 }
@@ -1946,7 +1961,7 @@ bool Manager::GetValueAsString
 )
 {
 	bool res = false;
-	char str[256];
+	char str[256] = {0};
 
 	if( o_value )
 	{
@@ -2290,7 +2305,7 @@ bool Manager::SetValue
 
 					// remove trailing zeros (and the decimal point, if present)
 					// TODO: better way of figuring out which locale is being used ('.' or ',' to separate decimals)
-					int nLen;
+					size_t nLen;
 					if( ( strchr( str, '.' ) != NULL) || (strchr( str, ',' ) != NULL ) )
 					{
 						for( nLen = strlen( str ) - 1; nLen > 0; nLen-- )
@@ -2587,11 +2602,15 @@ bool Manager::RefreshValue
 	    if( (node = driver->GetNodeUnsafe( _id.GetNodeId() ) ) != NULL)
 	    {
 			CommandClass* cc = node->GetCommandClass( _id.GetCommandClassId() );
-			uint8 index = _id.GetIndex();
-			uint8 instance = _id.GetInstance();
-			Log::Write( LogLevel_Info, "mgr,     Refreshing node %d: %s index = %d instance = %d (to confirm a reported change)", node->m_nodeId, cc->GetCommandClassName().c_str(), index, instance );
-			cc->RequestValue( 0, index, instance, Driver::MsgQueue_Send );
-			bRet = true;
+			if (cc) {
+        			uint8 index = _id.GetIndex();
+	        		uint8 instance = _id.GetInstance();
+		        	Log::Write( LogLevel_Info, "mgr,     Refreshing node %d: %s index = %d instance = %d (to confirm a reported change)", node->m_nodeId, cc->GetCommandClassName().c_str(), index, instance );
+		        	cc->RequestValue( 0, index, instance, Driver::MsgQueue_Send );
+        			bRet = true;
+                        } else {
+                                bRet = false;
+                        }
 		}
 		driver->ReleaseNodes();
 	}

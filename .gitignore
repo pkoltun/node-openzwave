@@ -6,3 +6,8 @@ OZW_Log.txt
 build
 zwcfg*
 zwscene.xml
+deps/open-zwave/dotnet/examples/OZWForm/src/bin/
+*.suo
+*.user
+deps/open-zwave/dotnet/examples/OZWForm/src/obj/
+deps/open-zwave/dotnet/examples/OZWForm/src/Debug/

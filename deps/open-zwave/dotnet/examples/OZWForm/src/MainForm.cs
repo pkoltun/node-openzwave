@@ -180,7 +180,7 @@ namespace OZWForm
             m_manager.OnNotification += new ManagedNotificationsHandler(NotificationHandler);
 
             // Add a driver
-			m_driverPort = @"\\.\COM4";
+			m_driverPort = @"\\.\COM11";
             m_manager.AddDriver(m_driverPort);
 //			m_manager.AddDriver(@"HID Controller", ZWControllerInterface.Hid);
         }
