@@ -8,6 +8,17 @@ Z-Wave network from JavaScript.
 It is currently able to scan a Z-Wave network, report on connected devices,
 monitor the network for changes, and has rudimentary write support.
 
+> This fork is adds some more functionality over original 
+> [node-openzwave](https://github.com/jperkin/node-openzwave)
+> Most of chnages are based on changes done by the community.
+>
+> Changes include:
+> * Windows support
+> * Support for Scene & Node Events
+> * More recent OpenZWave (1.3.x)
+> * Network healing functionality
+> * Support for `setConfigParam
+
 ## Install
 
 The module currently builds only on OS X, Linux and Windows VS 2013.  On Linux you will need to
@@ -57,10 +68,6 @@ zwave.disconnect();  // disconnect from the current connection
 Modifying device state:
 
 ```js
-/*
- * Set a multi-level device to the specified level (between 0-99).
- */
-zwave.setLevel(nodeid, level);
 
 /*
  * Turn a binary switch on/off.
@@ -71,7 +78,7 @@ zwave.switchOff(nodeid);
 /*
  * Set arbitrary values.
  */
-zwave.setValue(nodeid, commandclass, index, value);
+zwave.setValue(nodeid, commandclass, instance, index, value);
 ```
 
 Writing to device metadata (stored on the device itself):
