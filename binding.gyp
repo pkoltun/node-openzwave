@@ -9,6 +9,7 @@
         "deps/open-zwave/cpp/src"
         "deps/open-zwave/cpp/hidapi/hidapi",
         "deps/open-zwave/cpp/src",
+		"deps/open-zwave/cpp/src/aes",
         "deps/open-zwave/cpp/src/command_classes",
         "deps/open-zwave/cpp/src/platform",
         "deps/open-zwave/cpp/src/value_classes",

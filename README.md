@@ -148,10 +148,27 @@ that we will receive change messages.
 Prior to the 'node ready' event, there may be 'value changed' events even when
 no values were actually changed.
 
+#### `.on('value refreshed', function(nodeid, commandclass, value){})`
+
+A value has been refreshed. This event can be emitted even if value didn't changed. 
+The 'value changed' event will be emitted later on if after checks the change is confirmed.
+
+
 #### `.on('value removed', function(nodeid, commandclass, index){})`
 
 A value has been removed.  Use the index to calculate the offset where a
 command class can contain multiple values.
+
+#### `.on('node available', function(nodeid, nodeinfo){})`
+
+A node is now ready for accepting commands but we still don't have all node info.
+All info will be available after 'node ready' event.
+Information about the node is available in the `nodeinfo` object:
+
+* `nodeinfo.manufacturer`
+* `nodeinfo.product`
+* `nodeinfo.type`
+* `nodeinfo.loc` (location, renamed to avoid `location` keyword).
 
 #### `.on('node ready', function(nodeid, nodeinfo){})`
 

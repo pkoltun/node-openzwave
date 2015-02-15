@@ -11,3 +11,6 @@ deps/open-zwave/dotnet/examples/OZWForm/src/bin/
 *.user
 deps/open-zwave/dotnet/examples/OZWForm/src/obj/
 deps/open-zwave/dotnet/examples/OZWForm/src/Debug/
+visual_studio_sample/wintest/.ntvs_analysis.dat
+visual_studio_sample/wintest.v12.suo
+visual_studio_sample/wintest.v12.suo

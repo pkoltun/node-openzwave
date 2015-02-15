@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Philio: PAN04-1 Double Relay Switch 2x1.5kW with Power Measurement -->
+<Product xmlns='http://code.google.com/p/open-zwave/'>
+
+	<!-- Configuration Parameters -->
+	<CommandClass id="112">
+		<Value type="short" instance="1" index="1" genre="config" label="Watt meter report period" min="1" max="32000" value="720">
+			<Help>If the setting is configured for 1hour (set value =720), the device will report its instant power consumption every 1 hour to Z-Wave Controller. Unit: 5 seconds.</Help>
+		</Value>
+
+		<Value type="short" instance="1" index="2" genre="config" label="kWh meter report period" min="1" max="32000" value="6">
+			<Help>If the setting is configured for 1hour (set value =6), the device will report its power consumption in KWh every 1 hour to Z-Wave Controller. Unit: 5 seconds.</Help>
+		</Value>
+
+
+		<Value type="short" instance="1" index="3" genre="config" label="Threshold of Watt for Load Caution" min="10" max="1100" value="1100">
+			 <Help>Threshold of Watt for Load Caution</Help>
+		</Value>
+
+		<Value type="short" instance="1" index="4" genre="config" label="Threshold of kWh for Load Caution" min="0" max="10000" value="10000">
+			 <Help>Threshold of kWh for Load Caution</Help>
+		</Value>
+		
+		<Value type="byte" instance="1" index="5" genre="config" label="External switch type" min="1" max="2" value="1">
+			<Help>External switch type</Help>
+			<Item label="One Push Button" value="1" />
+			<Item label="Two Push Button" value="2" />
+		</Value>
+		
+		<Value type="byte" instance="1" index="6" genre="config" label="Level report mode" min="1" max="2" value="1">
+			<Help>Level report mode</Help>
+			<Item label="Report destination level in 5s" value="1" />
+			<Item label="Report 10 percent level while running" value="2" />
+		</Value>
+	</CommandClass>
+
+	<CommandClass id="32" name="COMMAND_CLASS_BASIC" version="1" setasreport="true">
+		<Instance index="1" />
+		<Value type="byte" genre="basic" instance="1" index="0" label="Basic" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="99" />
+	</CommandClass>
+
+</Product>
